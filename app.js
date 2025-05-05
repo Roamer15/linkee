@@ -8,8 +8,9 @@ import { dirname } from 'path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename) 
 
-import indexRouter from './routes/index'
-import usersRouter from './routes/users'
+import indexRouter from './routes/index.js'
+import usersRouter from './routes/users.js'
+import authRouter from './routes/auth.js'
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/auth', authRouter)
 
 export default app;
