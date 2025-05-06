@@ -14,7 +14,6 @@ export async function loginHandler(req, res,next){
             return res.status(401).json({ message: "Account not found, invalid credentials" });
           }
           
-
         const user = userResult.rows[0]
 
         if (!user.is_verified) {
