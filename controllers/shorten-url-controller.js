@@ -34,7 +34,7 @@ export async function urlShortenerHandler(req, res, next) {
     ]);
     const host =
       process.env.NODE_ENV === "production"
-        ? "yourdomain.com"
+        ? "https://linkee.up.railway.app/"
         : req.get("host");
 
     const shortUrl = `${req.protocol}://${host}/s/${shortCode}`;
