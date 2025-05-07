@@ -13,6 +13,7 @@ import usersRouter from './routes/users.js'
 import authRouter from './routes/auth.js'
 import shortenRouter from './routes/shorten.js'
 import redirectionRouter from './routes/redirection.js'
+import createdUrlsRouter from './routes/get-urls.js'
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use('/users', usersRouter);
 app.use('/api/auth', authRouter)
 app.use('/api/shorten', shortenRouter)
 app.use('/s', redirectionRouter)
+app.use('/api/my-urls', createdUrlsRouter)
 
 export default app;

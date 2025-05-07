@@ -4,19 +4,19 @@ import { query } from "../config/db.js";
 export async function getShortenedUrlsHandler(req, res, next) {
     const userId = req.user.id
     try {
-        const getUrlsQuery = `SELECT * FROM short_urls WHERE id=$1
+        const getUrlsQuery = `SELECT * FROM short_urls WHERE user_id=$1
                               ORDER BY created_at
                               `
         const getUrlsResult = await query(getUrlsQuery, [userId])
 
         if(getUrlsResult.rows.length === 0 ) {
             logger.error("THere are no shortened urls for this account")
-            res.status(404).json({message: `NO shortened urls have been created for this user`})
+            return res.status(404).json({message: `NO shortened urls have been created for this user: ${userId}`})
         }
 
         res.json({
             message: "Here are your urls",
-            urls: getUrlsResult
+            urls: getUrlsResult.rows
         })
 
     }
