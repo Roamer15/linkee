@@ -74,7 +74,7 @@ export async function registrationHandler(req, res, next) {
     logger.info(`User registered successfully: ${newUser.id}, verification email sent.`);
 
     res.status(201).json({
-      message: "User registered successfully. Please check your email to verify your account.",
+      message: "User registered successfully. Please check your email to verify your account. If you do not find any email, consider checking your spam",
       user: {
         id: newUser.id,
         username: newUser.username,
