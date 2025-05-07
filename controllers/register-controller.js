@@ -126,7 +126,7 @@ export async function verifyEmailHandler(req, res, next) {
     }
 
     if (userResult.rows[0].is_verified) {
-      return res.status(400).json({ message: "Email already verified" });
+      return res.status(400).json({ message: "Email already verified, check your spam to be sure" });
     }
 
     await query(`UPDATE users SET is_verified = true, verification_token = NULL WHERE id = $1`, [userId]);
