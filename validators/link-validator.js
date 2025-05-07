@@ -13,5 +13,14 @@ const linkValidator = Joi.object({
   expiresAt: Joi.date().iso().greater('now').optional().messages({
     'date.base': 'The expiresAt must be a valid date.',
     'date.format': 'The expiresAt must be in ISO 8601 date format.',
+    'date.greater': 'The expiresAt must be a future date.',
   }),
 })
+
+export const linkInputValidator = (req, res, next) => {
+  const { error } = linkValidator.validate(req.body);
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+};

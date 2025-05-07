@@ -12,6 +12,7 @@ import indexRouter from './routes/index.js'
 import usersRouter from './routes/users.js'
 import authRouter from './routes/auth.js'
 import shortenRouter from './routes/shorten.js'
+import redirectionRouter from './routes/redirection.js'
 
 const app = express();
 
@@ -24,5 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/auth', authRouter)
+app.use('/api/shorten', shortenRouter)
+app.use('/s', redirectionRouter)
 
 export default app;
