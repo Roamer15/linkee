@@ -65,7 +65,8 @@ export async function registrationHandler(req, res, next) {
     await query(`UPDATE users SET verification_token = $1 WHERE id = $2`, [verificationToken, newUser.id]);
 
     const port = process.env.PORT || 3000;
-    const verificationUrl = `http://localhost:${port}/api/auth/verify-email?token=${verificationToken}`;
+    const baseUrl = process.env.BASE_URL ||  `http://localhost:${port || 3000}`
+    const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
 
     // ✅ Pass username to email helper
     await sendVerificationEmail(newUser.email, newUser.username, verificationUrl);
@@ -172,7 +173,8 @@ export async function resendVerificationEmailHandler(req, res, next) {
       await query(`UPDATE users SET verification_token = $1 WHERE id = $2`, [verificationToken, user.id]);
   
       const port = process.env.PORT || 3000;
-      const verificationUrl = `http://localhost:${port}/api/auth/verify-email?token=${verificationToken}`;
+       const baseUrl = process.env.BASE_URL ||  `http://localhost:${port || 3000}`
+      const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
   
       // Send the email again
       await sendVerificationEmail(email, user.username, verificationUrl);
