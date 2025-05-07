@@ -1,3 +1,5 @@
+import logger from "../utils/logger.js";
+
 export const logoutUser = (req, res) => {
     // In a stateless JWT system, logout is primarily handled client-side
     // by deleting the token.
