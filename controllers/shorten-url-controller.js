@@ -77,16 +77,9 @@ export async function urlRedirectionHandler(req, res, next){
         return res.status(410).json({ message: 'This short URL has expired' });
       }
   
-    //   // Optional: Track the click details
-    //   await query(
-    //     `INSERT INTO url_clicks (url_id, referrer, user_agent)
-    //      SELECT id, $1, $2 FROM short_urls WHERE short_code = $3`,
-    //     [req.get('Referrer'), req.get('User-Agent'), shortCode]
-    //   );
-  
       // Redirect to the original URL
       res.redirect(301, long_url);
-      logger.info(long_url, clicks)
+      logger.info('Here\'s the original url and the number of times clicked ',long_url, clicks)
   
     } catch (error) {
       logger.error(`Redirection failed for ${shortCode}: ${error.message}`);
