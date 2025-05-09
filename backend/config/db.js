@@ -1,15 +1,16 @@
 import { Pool } from "pg";
 import logger from "../utils/logger.js";
+import dotenv from "dotenv";
 
 // Dynamically load dotenv based on the environment
 if (process.env.NODE_ENV === 'test') {
   logger.info("Test environment detected. Using test database config.");
-  await import('dotenv').then(dotenv => dotenv.config({ path: '.env.test' }));
+  dotenv.config({ path: '.env.test' });
 } else {
-  await import('dotenv').then(dotenv => dotenv.config());
+  dotenv.config(); // defaults to .env
 }
 
-// ✅ Only destructure AFTER dotenv is loaded
+// ✅ Now destructure safely
 const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
 
 if (!DB_USER || !DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_PORT) {
@@ -18,6 +19,9 @@ if (!DB_USER || !DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_PORT) {
   );
   process.exit(1);
 }
+
+// ... keep the rest of your code unchanged ✅
+
 
 const pool = new Pool({
   user: DB_USER,
