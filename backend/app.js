@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 const allowedOrigins = [
     'http://localhost:5173', // your local React dev
-    'https://your-frontend-production-domain.com', // your future frontend prod URL
+    'https://linkee-five.vercel.app/', // your future frontend prod URL
   ];
   
   app.use(cors({
