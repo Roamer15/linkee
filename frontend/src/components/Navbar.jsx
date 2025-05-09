@@ -9,11 +9,11 @@ export default function Navbar(){
       <div className="navbar-container">
         <div className="navbar-logo">
           <i className="fas fa-link logo-icon"></i>
-          <span className="logo-text">Linkee</span>
+          <a href='/' className="logo-text">Linkee</a>
         </div>
 
         <div className="navbar-links">
-          <a href="#testimonials">Dashboard</a>
+          <a href="/dashboard">Dashboard</a>
         </div>
 
         <div className="navbar-actions">
