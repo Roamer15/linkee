@@ -22,22 +22,24 @@ export async function urlShortenerHandler(req, res, next) {
     const generatedShortCode = generateCode(6);
     const shortCode = customCode || generatedShortCode;
 
-    const insertUrlInfoQuery = `
-              INSERT INTO short_urls (long_url, short_code, expires_at, user_id)
-              VALUES($1, $2, $3, $4)
-              RETURNING created_at, expires_at`;
-    const insertUrlInfoResult = await query(insertUrlInfoQuery, [
-      longUrl,
-      shortCode,
-      expiresAt,
-      userId,
-    ]);
     const host =
       process.env.NODE_ENV === "production"
         ? "linkee.up.railway.app"
         : req.get("host");
 
     const shortUrl = `${req.protocol}://${host}/s/${shortCode}`;
+
+    const insertUrlInfoQuery = `
+              INSERT INTO short_urls (long_url, short_code, expires_at, user_id, short_url)
+              VALUES($1, $2, $3, $4, $5)
+              RETURNING created_at, expires_at`;
+    const insertUrlInfoResult = await query(insertUrlInfoQuery, [
+      longUrl,
+      shortCode,
+      expiresAt,
+      userId,
+      shortUrl
+    ]);
 
     logger.info(`Short URL created: ${shortCode} for user ${userId}`);
 

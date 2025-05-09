@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
-import api from '../api'; // Adjust if needed
+import { useEffect, useState } from "react";
+import api from "../api"; // Adjust if needed
 
 export default function Dashboard() {
-  const [longUrl, setLongUrl] = useState('');
+  const [longUrl, setLongUrl] = useState("");
   const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const fetchUrls = async () => {
     try {
       setLoading(true);
       const data = await api.getMyUrls();
-      console.log(data)
+      console.log(data);
       setUrls(data.urls || []); // Adjust based on your backend response
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Failed to load URLs');
+      setError(err.message || "Failed to load URLs");
     } finally {
       setLoading(false);
     }
@@ -29,20 +29,20 @@ export default function Dashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!longUrl) {
-      setError('Please enter a URL');
+      setError("Please enter a URL");
       return;
     }
-    setError('');
+    setError("");
     try {
       setLoading(true);
       const data = await api.shortenUrl({ longUrl }); // Adjust field name if needed
-      setSuccessMessage(`Short URL created: ${data.shortened_URL}`);
-      setLongUrl('');
+      setSuccessMessage(`${data.shortened_URL}`);
+      setLongUrl("");
       // Optionally refresh URLs list
       fetchUrls();
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Failed to shorten URL');
+      setError(err.message || "Failed to shorten URL");
     } finally {
       setLoading(false);
     }
@@ -62,12 +62,19 @@ export default function Dashboard() {
           required
         />
         <button type="submit" className="submit-button" disabled={loading}>
-          {loading ? 'Shortening...' : 'Shorten URL'}
+          {loading ? "Shortening..." : "Shorten URL"}
         </button>
       </form>
 
       {error && <p className="error-text">{error}</p>}
-      {successMessage && <p className="success-text">{successMessage}</p>}
+      {successMessage && (
+        <p className="success-text">
+          {" "}
+          <a href={successMessage} target="_blank" rel="noopener noreferrer">
+            {successMessage}
+          </a>
+        </p>
+      )}
 
       <h2 className="dashboard-subtitle">Your Shortened URLs:</h2>
 
@@ -79,10 +86,37 @@ export default function Dashboard() {
         <ul className="url-list">
           {urls.map((url) => (
             <li key={url.id} className="url-item">
-              <p>Original: <a href={url.long_url} target="_blank" rel="noopener noreferrer">{url.long_url}</a></p>
-              <p>Short: <a href={url.shortUrl} target="_blank" rel="noopener noreferrer">{url.shortUrl}</a></p>
+              <p>
+                Original:{" "}
+                <a
+                  href={url.long_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {url.long_url}
+                </a>
+              </p>
+              <p>
+                Short:{" "}
+                <a
+                  href={url.shortUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {url.shortUrl}
+                </a>
+              </p>
               <p>Clicks: {url.clicks}</p>
               <p>Short Code: {url.short_code}</p>
+              <p>
+                Created At:{" "}
+                {new Date(url.created_at).toLocaleString()}
+              </p>
+              <p>
+                Expiration Date:{" "}
+                {url.expires_at === null ? "None" : new Date(url.expires_at).toLocaleString()}
+              </p>
+
             </li>
           ))}
         </ul>

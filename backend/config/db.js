@@ -59,6 +59,7 @@ async function initializeDbSchema() {
             short_code VARCHAR(10) UNIQUE NOT NULL,
             long_url VARCHAR(255) NOT NULL,
             user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+            short_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             expires_at TIMESTAMP,
             clicks INTEGER DEFAULT 0

@@ -10,7 +10,7 @@ export async function getShortenedUrlsHandler(req, res, next) {
         const getUrlsResult = await query(getUrlsQuery, [userId])
 
         if(getUrlsResult.rows.length === 0 ) {
-            logger.error("THere are no shortened urls for this account")
+            logger.error("There are no shortened urls for this account")
             return res.status(404).json({message: `NO shortened urls have been created for this user: ${userId}`})
         }
 
