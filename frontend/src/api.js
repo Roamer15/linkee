@@ -45,4 +45,5 @@ export default {
   // URL Shortener
   shortenUrl: (data) => fetchAPI('/shorten', 'POST', data),
   getMyUrls: () => fetchAPI('/my-urls'),
+  getStats: (shortCode) => fetchAPI(`/shorten/${shortCode}/stats`),
 };
