@@ -81,8 +81,68 @@ const router = express.Router()
  *         description: Unauthorized (missing or invalid token).
  *       500:
  *         description: Server error.
+ * 
  */
 router.post('/', authMiddleware, linkInputValidator, urlShortenerHandler);
+/**
+ * @swagger
+ * /api/shorten/{shortCode}/stats:
+ *   get:
+ *     summary: Get statistics for a shortened URL
+ *     description: |
+ *       Returns detailed analytics for a specific short URL owned by the authenticated user. 
+ *       This includes click count, creation date, expiration date, and other available metrics.
+ *     tags:
+ *       - Short URLs
+ *     parameters:
+ *       - name: shortCode
+ *         in: path
+ *         required: true
+ *         description: The short code of the URL you want stats for.
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved stats for the URL.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 shortCode:
+ *                   type: string
+ *                   example: abc123
+ *                 longUrl:
+ *                   type: string
+ *                   example: https://example.com/some-long-url
+ *                 clickCount:
+ *                   type: integer
+ *                   example: 42
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                   example: 2025-05-09T14:00:00Z
+ *                 expiresAt:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *                   example: 2025-12-31T23:59:59Z
+ *                 lastClickedAt:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *                   example: 2025-05-09T15:30:00Z
+ *       '401':
+ *         description: Unauthorized. Authentication required.
+ *       '403':
+ *         description: Forbidden. The user does not own this URL.
+ *       '404':
+ *         description: Short URL not found.
+ *       '500':
+ *         description: Server error.
+ */
 
 router.get('/:shortCode/stats', authMiddleware, getStatsOfUrlHandler)
 
