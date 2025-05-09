@@ -1,7 +1,15 @@
 import { Pool } from "pg";
 import logger from "../utils/logger.js";
-import "dotenv/config";
 
+// Dynamically load dotenv based on the environment
+if (process.env.NODE_ENV === 'test') {
+  logger.info("Test environment detected. Using test database config.");
+  await import('dotenv').then(dotenv => dotenv.config({ path: '.env.test' }));
+} else {
+  await import('dotenv').then(dotenv => dotenv.config());
+}
+
+// ✅ Only destructure AFTER dotenv is loaded
 const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
 
 if (!DB_USER || !DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_PORT) {
@@ -30,6 +38,7 @@ pool.on("error", (err, client) => {
   logger.error("Unexpected error on idle client in pool", err);
   process.exit(-1);
 });
+
 
 async function initializeDbSchema() {
     const client = await pool.connect()
@@ -71,8 +80,6 @@ async function initializeDbSchema() {
         CREATE INDEX IF NOT EXISTS idx_short_urls_user_id ON short_urls(user_id);
       `);
         logger.info("Short Urls table has been created successfully")
-
-        await client.query(`DROP TABLE click_logs;`)
 
         await client.query(`
           CREATE TABLE IF NOT EXISTS click_logs (
