@@ -74,7 +74,7 @@ async function initializeDbSchema() {
 
         await client.query(`
           CREATE TABLE IF NOT EXISTS click_logs (
-          id UUID PRIMARY KEY,
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           url_id UUID REFERENCES short_urls(id) ON DELETE CASCADE,
           clicked_at TIMESTAMP DEFAULT NOW()
           );
