@@ -1,7 +1,10 @@
-
+import { useNavigate } from "react-router";
 export default function HeroSection() {
-    const handleSubmit = () => {
-        
+
+    const navigate = useNavigate()
+    const handleSubmit = (e) => {
+        e.preventDefault();  // Prevent full page reload
+        navigate('/login')
     }
   return (
     <div className="hero-container">

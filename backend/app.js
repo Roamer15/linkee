@@ -5,6 +5,7 @@ import winstonLogger from './utils/logger.js'
 import morgan from 'morgan'
 import swaggerUi from "swagger-ui-express"
 import swaggerSpec from './config/swaggerConfig.js'
+import cors from 'cors'
 
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -26,6 +27,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+const allowedOrigins = [
+    'http://localhost:5173', // your local React dev
+    'https://your-frontend-production-domain.com', // your future frontend prod URL
+  ];
+  
+  app.use(cors({
+    origin: allowedOrigins,
+    credentials: true, // if you're using cookies or want to allow credentials
+  }));
+  
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

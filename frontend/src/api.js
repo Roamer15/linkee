@@ -40,6 +40,7 @@ export default {
   // Auth
   register: (data) => fetchAPI('/auth/register', 'POST', data),
   login: (data) => fetchAPI('/auth/login', 'POST', data),
+  resendVerificationEmail: (data) => fetchAPI('/verify-email', 'POST', data),
 
   // URL Shortener
   shortenUrl: (data) => fetchAPI('/shorten', 'POST', data),
