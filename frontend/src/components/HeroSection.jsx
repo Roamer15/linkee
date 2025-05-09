@@ -2,9 +2,16 @@ import { useNavigate } from "react-router";
 export default function HeroSection() {
 
     const navigate = useNavigate()
-    const handleSubmit = (e) => {
-        e.preventDefault();  // Prevent full page reload
-        navigate('/login')
+    const handleSubmit = () => {
+      const token = localStorage.getItem('token'); // or however you're storing login state
+
+      if (!token) {
+        // 🚨 User is NOT logged in → redirect to login
+        navigate('/login');
+        return;
+      }
+  
+      navigate('/dashboard')
     }
   return (
     <div className="hero-container">
