@@ -511,3 +511,43 @@ body {
     cursor: not-allowed;
   }
   
+
+
+  .dashboard-container {
+    padding: 2rem;
+  }
+  
+  .dashboard-title,
+  .dashboard-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .shorten-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .url-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .url-item {
+    background: #f5f5f5;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .success-text {
+    color: green;
+    margin-top: 1rem;
+  }
+  
+  .error-text {
+    color: red;
+    margin-top: 1rem;
+  }
+  
