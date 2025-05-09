@@ -34,7 +34,9 @@ const allowedOrigins = [
   
   app.use(cors({
     origin: allowedOrigins,
-    credentials: true, // if you're using cookies or want to allow credentials
+    cmethods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
   }));
   
 
