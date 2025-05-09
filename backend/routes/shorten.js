@@ -2,6 +2,7 @@ import express from "express"
 import authMiddleware from "../middlewares/authMiddleware.js"
 import { linkInputValidator } from "../validators/link-validator.js"
 import { urlShortenerHandler } from "../controllers/shorten-url-controller.js"
+import {getStatsOfUrlHandler} from "../controllers/user-urls-controller.js"
 const router = express.Router()
 
 /**
@@ -82,6 +83,8 @@ const router = express.Router()
  *         description: Server error.
  */
 router.post('/', authMiddleware, linkInputValidator, urlShortenerHandler);
+
+router.get('/:shortCode/stats', authMiddleware, getStatsOfUrlHandler)
 
 
 export default router

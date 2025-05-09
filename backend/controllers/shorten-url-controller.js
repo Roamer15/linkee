@@ -66,7 +66,7 @@ export async function urlRedirectionHandler(req, res, next) {
     try {
         // First: find the URL mapping
         const findResult = await query(
-            `SELECT long_url, expires_at, clicks FROM short_urls WHERE short_code = $1`,
+            `SELECT id, long_url, expires_at, clicks FROM short_urls WHERE short_code = $1`,
             [shortCode]
         );
 
@@ -75,7 +75,7 @@ export async function urlRedirectionHandler(req, res, next) {
             return res.status(404).json({ message: 'Short URL not found' });
         }
 
-        const { long_url, expires_at, clicks } = findResult.rows[0];
+        const { long_url, expires_at, clicks, id } = findResult.rows[0];
 
         // Check if the URL has expired
         if (expires_at && new Date(expires_at) < new Date()) {
@@ -88,6 +88,11 @@ export async function urlRedirectionHandler(req, res, next) {
             `UPDATE short_urls SET clicks = clicks + 1 WHERE short_code = $1`,
             [shortCode]
         );
+
+        await query(`INSERT INTO click_logs(url_id)
+                     VALUES ($1)
+                     RETURNING clicked_at`, [id]);
+        logger.info('Click stamp noted')
 
         // Log success with details
         logger.info(`Redirecting to ${long_url} | Short code: ${shortCode} | Clicks: ${clicks + 1}`);

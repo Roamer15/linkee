@@ -66,10 +66,26 @@ async function initializeDbSchema() {
             );
        `);
 
+      
        await client.query(`
         CREATE INDEX IF NOT EXISTS idx_short_urls_user_id ON short_urls(user_id);
       `);
-        logger.info("Shrt Urls table has been created successfully")
+        logger.info("Short Urls table has been created successfully")
+
+        await client.query(`
+          CREATE TABLE IF NOT EXISTS click_logs (
+          id UUID PRIMARY KEY,
+          url_id UUID REFERENCES short_urls(id) ON DELETE CASCADE,
+          clicked_at TIMESTAMP DEFAULT NOW()
+          );
+     `);
+
+    
+     await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_click_logs_url_id ON click_logs(url_id);
+    `);
+      logger.info("Short Urls table has been created successfully")
+
     }
     catch (error) {
         logger.error(`Error while initializing the schema`, error);
