@@ -470,6 +470,14 @@ body {
   }
   
 
+  .verify-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
   .verify-container {
     max-width: 400px;
     margin: 3rem auto;
@@ -477,6 +485,15 @@ body {
     text-align: center;
     border: 1px solid #ddd;
     border-radius: 1rem;
+
+    a {
+        padding: 1.2rem 0 0.2rem;
+        color: #007bff;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
   }
   
   .resend-button {
@@ -486,7 +503,7 @@ body {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    margin-top: 1rem;
+    margin: 1rem 0;
   }
   
   .resend-button:disabled {

@@ -14,7 +14,7 @@ async function fetchAPI(endpoint, method = 'GET', body = null) {
   const config = {
     method,
     headers,
-    credentials: 'include', // For cookies if needed
+    // credentials: 'include', // For cookies if needed
   };
 
   if (body) {
