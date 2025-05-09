@@ -72,6 +72,8 @@ async function initializeDbSchema() {
       `);
         logger.info("Short Urls table has been created successfully")
 
+        await client.query(`DROP TABLE click_logs;`)
+
         await client.query(`
           CREATE TABLE IF NOT EXISTS click_logs (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
