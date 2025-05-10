@@ -81,16 +81,14 @@ export default function LoginForm() {
               )}
             </div>
 
-            <p className="signup-link">
-              No account? <a href="/register">Sign up</a>
-            </p>
-
+            
             {serverError && <p className="error-text">{serverError}</p>}
 
             <div className="button-group">
               <button type="submit" className="submit-button">
                 Login
               </button>
+
               <button
                 className="close-button"
                 onClick={() => navigate("/")}
@@ -99,6 +97,10 @@ export default function LoginForm() {
                 &times;
               </button>
             </div>
+            <p className="signup-link">
+              No account? <a href="/register">Sign up</a>
+            </p>
+
           </div>
         </div>
       </div>
