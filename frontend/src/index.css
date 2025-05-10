@@ -493,6 +493,17 @@ body {
   }
 }
 
+.signup-link {
+  color: #6B7280;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+}
+
+.signup-link a {
+  text-decoration: underline;
+}
+
 .resend-button {
   background-color: #007bff;
   color: white;

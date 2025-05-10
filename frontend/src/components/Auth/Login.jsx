@@ -79,6 +79,11 @@ export default function LoginForm() {
               {errors.password && <p className="error-text">{errors.password}</p>}
             </div>
 
+            <p class="signup-link">
+        No account?
+        <a href="/register">Sign up</a>
+      </p>
+
             {serverError && <p className="error-text">{serverError}</p>}
 
             <button type="submit" className="submit-button">
