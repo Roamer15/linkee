@@ -32,7 +32,7 @@ export default function Navbar(){
 
       {isMobileMenuOpen && (
         <div className="mobile-menu">
-          <a href="#testimonials">Dashboard</a>
+          <a href="/dashboard">Dashboard</a>
           <div className="mobile-menu-actions">
             <a href="/login" className="login-btn">Log In</a>
             <a href="/register" className="signup-btn">Sign Up</a>
