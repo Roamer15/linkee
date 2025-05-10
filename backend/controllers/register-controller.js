@@ -106,8 +106,8 @@ async function sendVerificationEmail(toEmail, username, verificationUrl) {
       <div style="font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif; max-width: 640px; margin: auto; padding: 0; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); border: 1px solid #e8e8e8;">
   <!-- Header with gradient -->
   <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 20px; text-align: center;">
-    <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 600;">Welcome to Bulletin HQ!</h1>
-    <div style="color: rgba(255,255,255,0.8); font-size: 16px; margin-top: 8px;">Your premium content hub awaits</div>
+    <h1 style="margin: 0; color: white; font-size: 28px; font-weight: 600;">Welcome to Linkee</h1>
+    <div style="color: rgba(255,255,255,0.8); font-size: 16px; margin-top: 8px;">Your url shortening awaits</div>
   </div>
   
   <!-- Main content -->
@@ -115,7 +115,7 @@ async function sendVerificationEmail(toEmail, username, verificationUrl) {
     <h2 style="color: #2d3748; margin-top: 0; font-size: 22px; font-weight: 600;">Hi ${username},</h2>
     
     <p style="font-size: 16px; line-height: 1.6; color: #4a5568; margin-bottom: 24px;">
-      Thank you for joining <span style="font-weight: 600; color: #5a67d8;">Bulletin HQ</span>! We're thrilled to have you on board. To complete your registration and unlock all features, please verify your email address:
+      Thank you for joining <span style="font-weight: 600; color: #5a67d8;">Linkee</span>! We're thrilled to have you on board. To complete your registration and unlock all features, please verify your email address:
     </p>
     
     <!-- CTA Button with hover effect -->
@@ -146,8 +146,8 @@ async function sendVerificationEmail(toEmail, username, verificationUrl) {
       <a href="#" style="margin: 0 8px; display: inline-block;"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="20" alt="LinkedIn"></a>
     </p>
     <p style="margin: 0; font-size: 12px; color: #a0aec0;">
-      &copy; ${new Date().getFullYear()} Bulletin HQ. All rights reserved.<br>
-      <span style="font-size: 11px;">123 Business Ave, Suite 500, San Francisco, CA 94107</span>
+      &copy; ${new Date().getFullYear()} Linkee. All rights reserved.<br>
+      
     </p>
   </div>
 </div>
