@@ -1,26 +1,26 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import api from '../../api'; // Adjust path as needed
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import api from "../../api"; // Adjust path as needed
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
-    setErrors({ ...errors, [e.target.id]: '' });
-    setServerError('');
+    setErrors({ ...errors, [e.target.id]: "" });
+    setServerError("");
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
     return newErrors;
   };
 
@@ -34,11 +34,11 @@ export default function LoginForm() {
     try {
       const data = await api.login(formData);
       // Save token or any other needed data
-      localStorage.setItem('token', data.token); // or data.accessToken etc.
-      console.log("Login successful")
-      navigate('/dashboard'); // Redirect to dashboard or wherever
+      localStorage.setItem("token", data.token); // or data.accessToken etc.
+      console.log("Login successful");
+      navigate("/dashboard"); // Redirect to dashboard or wherever
     } catch (error) {
-      setServerError(error.message || 'Login failed');
+      setServerError(error.message || "Login failed");
     }
   };
 
@@ -76,19 +76,29 @@ export default function LoginForm() {
                 value={formData.password}
                 onChange={handleChange}
               />
-              {errors.password && <p className="error-text">{errors.password}</p>}
+              {errors.password && (
+                <p className="error-text">{errors.password}</p>
+              )}
             </div>
 
-            <p class="signup-link">
-        No account?
-        <a href="/register">Sign up</a>
-      </p>
+            <p className="signup-link">
+              No account? <a href="/register">Sign up</a>
+            </p>
 
             {serverError && <p className="error-text">{serverError}</p>}
 
-            <button type="submit" className="submit-button">
-              Login
-            </button>
+            <div className="button-group">
+              <button type="submit" className="submit-button">
+                Login
+              </button>
+              <button
+                className="close-button"
+                onClick={() => navigate("/")}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -365,6 +365,18 @@ body {
   max-width: 400px;
 }
 
+.close-button {
+  background: none;
+  border: none;
+  font-size: 3rem;
+  color: #007bff;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+
 .form-card {
   background-color: white;
   border: 1px solid #e5e7eb;

@@ -1,41 +1,38 @@
-import { useState } from 'react';
-import api from '../../api'; // make sure the path is correct
-import { useNavigate } from 'react-router';
+import { useState } from "react";
+import api from "../../api"; // make sure the path is correct
+import { useNavigate } from "react-router";
 
 export default function RegistrationForm() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [serverError, setServerError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
+      newErrors.username = "Username is required";
     } else if (formData.username.trim().length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+      newErrors.username = "Username must be at least 3 characters";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
-    ) {
-      newErrors.email = 'Enter a valid email';
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      newErrors.email = "Enter a valid email";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -49,30 +46,30 @@ export default function RegistrationForm() {
     setFormData((prev) => ({ ...prev, [id]: value }));
 
     // Clear error for this field when user starts typing
-    setErrors((prev) => ({ ...prev, [id]: '' }));
-    setServerError('');
+    setErrors((prev) => ({ ...prev, [id]: "" }));
+    setServerError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError('');
-    setSuccess('');
+    setServerError("");
+    setSuccess("");
 
     if (!validateForm()) return;
 
     try {
       const response = await api.register(formData);
-      console.log('Registration success:', response);
-      setSuccess('Account created successfully! Check your email and spam too');
+      console.log("Registration success:", response);
+      setSuccess("Account created successfully! Check your email and spam too");
 
       // Optionally redirect after success
-      navigate('/verify-email', { state: { email: formData.email } });
+      navigate("/verify-email", { state: { email: formData.email } });
 
       // Reset form
-      setFormData({ username: '', email: '', password: '' });
+      setFormData({ username: "", email: "", password: "" });
     } catch (err) {
       console.error(err);
-      setServerError(err.message || 'Registration failed');
+      setServerError(err.message || "Registration failed");
     }
   };
 
@@ -112,9 +109,7 @@ export default function RegistrationForm() {
                 value={formData.email}
                 onChange={handleChange}
               />
-              {errors.email && (
-                <p className="error-text">{errors.email}</p>
-              )}
+              {errors.email && <p className="error-text">{errors.email}</p>}
             </div>
 
             <div className="form-group">
@@ -139,6 +134,14 @@ export default function RegistrationForm() {
 
             <button type="submit" className="submit-button">
               Create an account
+            </button>
+
+            <button
+              className="close-button"
+              onClick={() => navigate("/")}
+              aria-label="Close"
+            >
+              &times;
             </button>
           </div>
         </div>
