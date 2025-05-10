@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import api from "../api";
 
@@ -8,6 +8,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [customCode, setCustomCode] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
 
   const fetchUrls = async () => {
     try {
@@ -26,6 +28,27 @@ export default function Dashboard() {
     fetchUrls();
   }, []);
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!longUrl) {
+  //     setError("Please enter a URL");
+  //     return;
+  //   }
+  //   setError("");
+  //   try {
+  //     setLoading(true);
+  //     const data = await api.shortenUrl({ longUrl });
+  //     setSuccessMessage(data.shortened_URL);
+  //     setLongUrl("");
+  //     fetchUrls();
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError(err.message || "Failed to shorten URL");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!longUrl) {
@@ -35,9 +58,16 @@ export default function Dashboard() {
     setError("");
     try {
       setLoading(true);
-      const data = await api.shortenUrl({ longUrl });
+      const payload = {
+        longUrl,
+        customCode: customCode || undefined,
+        expiresAt: expiresAt || undefined,
+      };
+      const data = await api.shortenUrl(payload);
       setSuccessMessage(data.shortened_URL);
       setLongUrl("");
+      setCustomCode("");
+      setExpiresAt("");
       fetchUrls();
     } catch (err) {
       console.error(err);
@@ -46,6 +76,7 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+  
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -79,6 +110,20 @@ export default function Dashboard() {
             className="url-input"
             required
           />
+          <input
+            type="text"
+            placeholder="Custom code (optional)"
+            value={customCode}
+            onChange={(e) => setCustomCode(e.target.value)}
+            className="url-input"
+          />
+          <input
+            type="datetime-local"
+            placeholder="Expiration date (optional)"
+            value={expiresAt}
+            onChange={(e) => setExpiresAt(e.target.value)}
+            className="url-input"
+          />
           <button type="submit" className="shorten-button" disabled={loading}>
             {loading ? "Shortening..." : "Shorten"}
           </button>
@@ -110,7 +155,7 @@ export default function Dashboard() {
         {loading && urls.length === 0 ? (
           <div className="loading-stats">
             <p>Loading URLs...</p>
-            </div>
+          </div>
         ) : urls.length === 0 ? (
           <p className="no-urls">No URLs yet.</p>
         ) : (
