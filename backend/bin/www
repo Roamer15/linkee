@@ -7,8 +7,7 @@
 import app from '../app.js';
 import debugLib from'debug';
 import http from'http';
-import { initializeDbSchema, connectToDb } from '../config/db.js';
-import { pool } from '../config/db.js';
+import { initializeDbSchema, connectToDb, pool } from '../config/db.js';
 import logger from '../utils/logger.js';
 
 const debug = debugLib('linkee:server')
@@ -103,7 +102,7 @@ function onError(error) {
         logger.error(bind + ' is already in use');
         port += 1;
         logger.info(`Trying next port: ${port}`);
-        server.listen(port);
+        // startSever()
         break;
       
     default:
@@ -122,12 +121,16 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
+// server.listen(port, () => {
+//   console.log("server listening on port whatever")
+// })
+
 const startSever = async () => {
   try {
     logger.info(`Attempting to start server on port ${port}`)
     await connectToDb()
     await initializeDbSchema()
-    //await seedSampleProvidersAndSlots()
+    // await seedSampleProvidersAndSlots()
     logger.info(`Starting server on port ${port}`)
     server.listen(port);
     server.on('error', onError);
@@ -139,4 +142,4 @@ const startSever = async () => {
   }
 }
 
-startSever()
+ startSever()

@@ -3,12 +3,12 @@ import logger from "../utils/logger.js";
 import dotenv from "dotenv";
 
 // Dynamically load dotenv based on the environment
-if (process.env.NODE_ENV === 'test') {
-  logger.info("Test environment detected. Using test database config.");
-  dotenv.config({ path: '.env.test' });
-} else {
-  dotenv.config(); // defaults to .env
-}
+// if (process.env.NODE_ENV === "test") {
+//   logger.info("Test environment detected. Using test database config.");
+//   dotenv.config({ path: '.env.test' });
+// } else {
+dotenv.config(); // defaults to .env
+// }
 
 // ✅ Now destructure safely
 const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
@@ -19,9 +19,6 @@ if (!DB_USER || !DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_PORT) {
   );
   process.exit(1);
 }
-
-// ... keep the rest of your code unchanged ✅
-
 
 const pool = new Pool({
   user: DB_USER,
@@ -38,20 +35,22 @@ pool.on("connect", (client) => {
   logger.info(`Client connected from Pool (Total count: ${pool.totalCount})`);
 });
 
+//logger.info(pool.connect())
+
 pool.on("error", (err, client) => {
   logger.error("Unexpected error on idle client in pool", err);
   process.exit(-1);
 });
 
-
 async function initializeDbSchema() {
-    const client = await pool.connect()
+  logger.info("about to connect to db");
+  const client = await pool.connect();
 
-    try{
-        logger.info("Initializing database schema");
-        await client.query("CREATE EXTENSION IF NOT EXISTS pgcrypto");
+  try {
+    logger.info("Initializing database schema");
+    await client.query("CREATE EXTENSION IF NOT EXISTS pgcrypto");
 
-        await client.query(`
+    await client.query(`
             CREATE TABLE IF NOT EXISTS users(
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             username VARCHAR(100) UNIQUE NOT NULL,
@@ -63,10 +62,9 @@ async function initializeDbSchema() {
 );
 
        `);
-        logger.info("Users table has been created successfully")
+    logger.info("Users table has been created successfully");
 
-
-        await client.query(`
+    await client.query(`
             CREATE TABLE IF NOT EXISTS short_urls(
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             short_code VARCHAR(10) UNIQUE NOT NULL,
@@ -79,13 +77,12 @@ async function initializeDbSchema() {
             );
        `);
 
-      
-       await client.query(`
+    await client.query(`
         CREATE INDEX IF NOT EXISTS idx_short_urls_user_id ON short_urls(user_id);
       `);
-        logger.info("Short Urls table has been created successfully")
+    logger.info("Short Urls table has been created successfully");
 
-        await client.query(`
+    await client.query(`
           CREATE TABLE IF NOT EXISTS click_logs (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           url_id UUID REFERENCES short_urls(id) ON DELETE CASCADE,
@@ -93,57 +90,52 @@ async function initializeDbSchema() {
           );
      `);
 
-    
-     await client.query(`
+    await client.query(`
       CREATE INDEX IF NOT EXISTS idx_click_logs_url_id ON click_logs(url_id);
     `);
-      logger.info("Short Urls table has been created successfully")
-
-    }
-    catch (error) {
-        logger.error(`Error while initializing the schema`, error);
-        process.exit(1);
-      } finally {
-        client.release();
-      }
+    logger.info("Short Urls table has been created successfully");
+  } catch (error) {
+    logger.error(`Error while initializing the schema`, error);
+    process.exit(1);
+  } finally {
+    client.release();
+  }
 }
 
-
 async function connectToDb() {
-    try {
-      const client = await pool.connect();
-      logger.info(`Database connection pool established successfully`);
-      client.release();
-    } catch (error) {
-      logger.error("Unable to establish database connection pool", error);
-      process.exit(1);
-    }
+  try {
+    const client = await pool.connect();
+    logger.info(`Database connection pool established successfully`);
+    client.release();
+  } catch (error) {
+    logger.error("Unable to establish database connection pool", error);
+    process.exit(1);
   }
-  
-  async function query(text, params) {
-    const start = Date.now();
-    try {
-      const response = await pool.query(text, params);
-      const duration = Date.now() - start;
-      logger.info(
-        `Executed query: { text: ${text.substring(
-          0,
-          100
-        )}..., params: ${JSON.stringify(
-          params
-        )}, duration: ${duration}ms, rows: ${response.rowCount}}`
-      );
-      return response;
-    } catch (error) {
-      logger.error(
-        `Error executing query: { text: ${text.substring(
-          0,
-          100
-        )}..., params: ${JSON.stringify(params)}, error: ${error.message}}`
-      );
-      throw error;
-    }
+}
+
+async function query(text, params) {
+  const start = Date.now();
+  try {
+    const response = await pool.query(text, params);
+    const duration = Date.now() - start;
+    logger.info(
+      `Executed query: { text: ${text.substring(
+        0,
+        100
+      )}..., params: ${JSON.stringify(
+        params
+      )}, duration: ${duration}ms, rows: ${response.rowCount}}`
+    );
+    return response;
+  } catch (error) {
+    logger.error(
+      `Error executing query: { text: ${text.substring(
+        0,
+        100
+      )}..., params: ${JSON.stringify(params)}, error: ${error.message}}`
+    );
+    throw error;
   }
-  
-  export { pool, connectToDb, initializeDbSchema, query };
-  
+}
+
+export { pool, connectToDb, initializeDbSchema, query };

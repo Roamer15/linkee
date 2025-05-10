@@ -34,8 +34,6 @@ app.use(cors({
   preflightContinue: false // ✅ Explicit preflight handling
 }));
 
-app.options('*', cors()); 
-
 const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
 app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
 app.use(express.json());

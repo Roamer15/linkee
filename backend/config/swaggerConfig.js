@@ -1,4 +1,3 @@
-import { format } from 'morgan';
 import swaggerJsdoc from 'swagger-jsdoc';
 
 const swaggerOptions = {

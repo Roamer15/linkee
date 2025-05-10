@@ -1,4 +1,4 @@
-import crypto from 'crypto'; // Make sure this is at the top of the file
+import crypto from 'node:crypto'; // Make sure this is at the top of the file
 
 export function generateCode(length = 6, charset = 'alphanumeric') {
     const charsets = {
