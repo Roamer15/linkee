@@ -181,6 +181,7 @@ export async function verifyEmailHandler(req, res, next) {
 
   } catch (error) {
     logger.error(`Email verification failed: `, error);
+    next(error)
     return res.status(400).json({ message: "Invalid or expired verification token" });
   }
 }

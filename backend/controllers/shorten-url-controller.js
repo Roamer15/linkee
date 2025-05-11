@@ -7,20 +7,20 @@ export async function urlShortenerHandler(req, res, next) {
   const { longUrl, customCode, expiresAt } = req.body;
   const userId = req.user.id;
   try {
-    if (customCode) {
-        const checkCustomCode = `SELECT * FROM short_urls WHERE short_code=$1`;
-        const checkCustomCodeResult = await query(checkCustomCode, [customCode]);
-      
-        if (checkCustomCodeResult.rows.length > 0) {
-          logger.error(`Custom code ${customCode} is already in use`);
-          return res.status(409).json({
-            message: "Custom Code conflict: Custom code is already in use. Try another one",
-          });
-        }
-      }
-      
     const generatedShortCode = generateCode(6);
     const shortCode = customCode || generatedShortCode;
+
+    if (shortCode) {
+      const checkCustomCode = `SELECT * FROM short_urls WHERE short_code=$1`;
+      const checkCustomCodeResult = await query(checkCustomCode, [shortCode]);
+    
+      if (checkCustomCodeResult.rows.length > 0) {
+        logger.error(`Custom code ${shortCode} is already in use`);
+        return res.status(409).json({
+          message: "Custom Code conflict: Custom code is already in use. Try another one",
+        });
+      }
+    }
 
     const host =
       process.env.NODE_ENV === "production"
@@ -51,8 +51,10 @@ export async function urlShortenerHandler(req, res, next) {
         "created_at": insertUrlInfoResult.rows[0].created_at,
         "expires_at": insertUrlInfoResult.rows[0].expires_at || "No expiration time"
       });
+      next()
   } catch (error) {
     logger.error(`URL shortening failed: ${error.message}`);
+    next(error)
       res.status(500).json({ 
         message: 'Failed to create short URL',
         error: error.message 

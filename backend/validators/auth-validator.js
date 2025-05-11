@@ -3,7 +3,9 @@ import Joi from "joi";
 const registerValidator = Joi.object({
   email: Joi.string().email({ maxDomainSegments: 2 }).required(),
   username: Joi.string().min(3).max(30).required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+  password: Joi.string()
+  .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:"\\\\|,.<>\\/?]).{8,}$'))
+  .message('Password must be at least 8 characters long, include upper and lower case letters, a number, and a special character'),
   confirmPassword: Joi.ref('password'),
   profileImageUrl: Joi.string().uri().pattern(/\.(jpeg|jpg|gif|png)$/i).allow("").optional()
 })

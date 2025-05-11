@@ -55,6 +55,7 @@ export async function loginHandler(req, res,next){
             })
     } catch(err) {
         logger.error(`Error during login process for ${email}: `, err)
+        next(err)
     res.status(500).json({ message: err.message || "Server error during login" })
     }
 }

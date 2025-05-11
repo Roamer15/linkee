@@ -18,13 +18,14 @@ export async function getShortenedUrlsHandler(req, res, next) {
             message: "Here are your urls",
             urls: getUrlsResult.rows
         })
-
+        next()
     }
     catch(error) {
         logger.error(
             `Error displaying shortened urls for user ${userId} : `,
             error
           );
+          next(error)
           res
             .status(500)
             .json({ message: "Failed to fetch urls", error: error.message });
@@ -59,9 +60,11 @@ export async function getStatsOfUrlHandler(req, res, next){
           expiresAt: url.expires_at,
           timeClicks: clickLogsResult.rows // Optional: array of click timestamps
         });
+        next()
     }
     catch(error) {
         console.error(error);
+        next(error)
         res.status(500).json({ message: 'Server error' });
     }
 }
