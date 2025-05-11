@@ -2,7 +2,7 @@
 
 **Linkee** is a full-stack, modern URL shortening service built with:
 
-* **Frontend:** React + Tailwind CSS (SPA)
+* **Frontend:** React + CSS (SPA)
 * **Backend:** Express + PostgreSQL (Node.js)
 * **Deployment:** Railway
 
@@ -29,7 +29,7 @@
 | Frontend           | Backend                   |
 | ------------------ | ------------------------- |
 | React (Vite)       | Express.js                |
-| Tailwind CSS       | MongoDB (Mongoose)        |
+| CSS                | PostgreSQL                |
 | React Router (SPA) | JWT Authentication        |
 | Fetch API          | Nodemailer (Email Verify) |
 | Responsive Design  | Crypto (Safe ID gen)      |
@@ -64,12 +64,12 @@ npm run dev
 ✅ **Env vars you'll need:**
 
 ```
-MONGO_URI=your-mongodb-uri
+BASE_URL=your-frontend-url
 JWT_SECRET=your-secret
 DB_HOST=your-smtp-host
 DB_PORT=587
 EMAIL_USER=your-email
-EMAIL_PASS=your-password
+EMAIL_PASS=your-app-password // You can get one on google apps under security
 ```
 
 ### 3️⃣ Set Up the Frontend
@@ -90,7 +90,7 @@ npm run dev
 | GET    | `/api/:shortCode`    | Redirect to original URL         |
 | POST   | `/api/auth/register` | User registration                |
 | POST   | `/api/auth/login`    | User login                       |
-| GET    | `/api/links`         | Fetch user links (auth required) |
+| GET    | `/api/my-urls`         | Fetch user links (auth required) |
 
 ---
 
