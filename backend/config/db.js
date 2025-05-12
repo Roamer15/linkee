@@ -2,7 +2,6 @@ import { Pool } from "pg";
 import logger from "../utils/logger.js";
 import dotenv from "dotenv";
 
-// Dynamically load dotenv based on the environment
 // if (process.env.NODE_ENV === "test") {
 //   logger.info("Test environment detected. Using test database config.");
 //   dotenv.config({ path: '.env.test' });
@@ -10,7 +9,6 @@ import dotenv from "dotenv";
 dotenv.config(); // defaults to .env
 // }
 
-// ✅ Now destructure safely
 const { DB_USER, DB_HOST, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
 
 if (!DB_USER || !DB_HOST || !DB_PASSWORD || !DB_NAME || !DB_PORT) {
@@ -68,7 +66,7 @@ async function initializeDbSchema() {
             CREATE TABLE IF NOT EXISTS short_urls(
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             short_code VARCHAR(10) UNIQUE NOT NULL,
-            long_url VARCHAR(255) NOT NULL,
+            long_url TEXT NOT NULL,
             user_id UUID REFERENCES users(id) ON DELETE CASCADE,
             short_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

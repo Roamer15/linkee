@@ -18,24 +18,25 @@ import authRouter from './routes/auth.js'
 import shortenRouter from './routes/shorten.js'
 import redirectionRouter from './routes/redirection.js'
 import createdUrlsRouter from './routes/get-urls.js'
+import logger from './utils/logger.js'
 
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173', // your local React dev
-  'https://linkee-five.vercel.app', // your frontend prod URL
+  'http://localhost:5173',
+  'https://linkee-five.vercel.app',
 ];
 
 app.use(cors({
   origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ Fixed typo + added OPTIONS
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  preflightContinue: false // ✅ Explicit preflight handling
+  preflightContinue: false
 }));
 
-const morganFormat = process.env.NODE_ENV === "production" ? "dev" : 'combined'
-app.use(morgan(morganFormat, { stream: winstonLogger.stream }));
+const morganFormat = process.env.NODE_ENV === "production" ? "combined" : "dev";
+app.use(morgan(morganFormat));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -48,5 +49,14 @@ app.use('/api/shorten', shortenRouter)
 app.use('/s', redirectionRouter)
 app.use('/api/my-urls', createdUrlsRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+
+app.use((err, req, res, next) => {
+  logger.error(err.stack);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
 export default app;

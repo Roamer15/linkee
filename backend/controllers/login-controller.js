@@ -39,8 +39,7 @@ export async function loginHandler(req, res,next){
               expiresIn: process.env.JWT_EXPIRES_IN
             }, (err, token) => {
               if (err) {
-                logger.error(`Error generating JWT for ${email}: `, err)
-                throw new Error('Error generating authentication token')
+                return next(err);
               }
               logger.info(`User logged in successfully: ${email} (ID: ${user.id})`)
               res.json({
@@ -56,6 +55,5 @@ export async function loginHandler(req, res,next){
     } catch(err) {
         logger.error(`Error during login process for ${email}: `, err)
         next(err)
-    res.status(500).json({ message: err.message || "Server error during login" })
     }
 }

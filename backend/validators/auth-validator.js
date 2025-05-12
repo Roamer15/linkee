@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const registerValidator = Joi.object({
-  email: Joi.string().email({ maxDomainSegments: 2 }).required(),
+  email: Joi.string().email().required(),
   username: Joi.string().min(3).max(30).required(),
   password: Joi.string()
   .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:"\\\\|,.<>\\/?]).{8,}$'))

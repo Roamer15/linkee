@@ -9,13 +9,8 @@ const HASH_SALT = 10;
 export async function registrationHandler(req, res, next) {
   const { username, email, password } = req.body;
 
-  // ✅ Basic input validation
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: "Username, email, and password are required." });
-  }
-
   try {
-    // 1️⃣ Check if email or username already exists
+
     const userCheckQuery = "SELECT email, username FROM users WHERE email = $1 OR username = $2";
     const userCheckResult = await query(userCheckQuery, [email, username]);
 
@@ -88,10 +83,10 @@ export async function registrationHandler(req, res, next) {
   }
 }
 
-// ✅ Updated helper: receives username
+
 async function sendVerificationEmail(toEmail, username, verificationUrl) {
   const transporter = nodemailer.createTransport({
-    service: "gmail", // or use SMTP config
+    service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -181,8 +176,9 @@ export async function verifyEmailHandler(req, res, next) {
 
   } catch (error) {
     logger.error(`Email verification failed: `, error);
-    next(error)
-    return res.status(400).json({ message: "Invalid or expired verification token" });
+    return res.status(400).json({ 
+      message: "Invalid or expired verification token",
+      error: error.message });
   }
 }
 

@@ -11,10 +11,9 @@ function authMiddleware(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // <-- VERIFY, not decode
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Set req.user depending on your payload structure
-    req.user = decoded.user || decoded; // Fallback if not wrapped in user
+    req.user = decoded.user || decoded;
 
     if (!req.user?.id) {
       throw new Error("Token payload missing user ID");

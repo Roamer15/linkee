@@ -63,7 +63,7 @@ export async function getStatsOfUrlHandler(req, res, next){
         next()
     }
     catch(error) {
-        console.error(error);
+        logger.error(error);
         next(error)
         res.status(500).json({ message: 'Server error' });
     }
