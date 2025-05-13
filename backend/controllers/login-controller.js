@@ -11,20 +11,26 @@ export async function loginHandler(req, res,next){
 
         if (userResult.rows.length === 0) {
             logger.warn(`Login Attempt failed: Account with email ${email} doesn't exist`);
-            return res.status(401).json({ message: "Account not found, invalid credentials" });
+            const err = new Error("Account not found, invalid credentials")
+            err.status = 401
+            return next(err)
           }
           
         const user = userResult.rows[0]
 
         if (!user.is_verified && process.env.NODE_ENV !== 'test') {
-          return res.status(403).json({ message: 'Please verify your email before logging in' });
+          const err = new Error("Please verify your email before logging in")
+          err.status = 403
+          return next(err)
         }
 
         const is_passwordMatch = await bcrypt.compare(password, user.password)
 
         if(!is_passwordMatch) {
             logger.warn(`Login attempt failed: Incorrect password - ${email}`)
-            return res.status(401).json({ message: "Invalid password" })
+            const err = new Error("Invalid password")
+            err.status = 401
+            return next(err)
         }
 
         const payload = {

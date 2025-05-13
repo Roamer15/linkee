@@ -18,18 +18,19 @@ export async function registrationHandler(req, res, next) {
       const existingUser = userCheckResult.rows[0];
       if (existingUser.email === email) {
         logger.warn(`Registration attempt failed: Email already exists - ${email}`);
-        return res.status(409).json({ message: "Email already in use" });
+        const err = new Error("Email already in use")
+        err.status = 409
+        return next(err)
       }
       if (existingUser.username === username) {
         logger.warn(`Registration attempt failed: Username already exists - ${username}`);
-        return res.status(409).json({ message: "Username already in use" });
-      }
+        const err = new Error("Username already in use")
+        err.status = 409
+        return next(err)      }
     }
 
-    // 2️⃣ Hash password
     const passwordHash = await bcrypt.hash(password, HASH_SALT);
 
-    // 3️⃣ Insert user (is_verified = false)
     let newUserResult;
     try {
       const insertUserSql = `
@@ -42,8 +43,9 @@ export async function registrationHandler(req, res, next) {
       // ✅ Handle race condition → unique constraint violation
       if (insertError.code === '23505') {
         logger.warn(`Unique constraint violation on insert: `, insertError.detail);
-        return res.status(409).json({ message: "Email or username already in use" });
-      }
+        const err = new Error("Username or Email already in use")
+        err.status = 409
+        return next(err)      }
       throw insertError; // rethrow other errors
     }
 
@@ -161,11 +163,15 @@ export async function verifyEmailHandler(req, res, next) {
 
     const userResult = await query(`SELECT is_verified FROM users WHERE id = $1`, [userId]);
     if (userResult.rows.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      const err = new Error("User not found")
+        err.status = 404
+        return next(err)
     }
 
     if (userResult.rows[0].is_verified) {
-      return res.status(400).json({ message: "Email already verified, check your spam to be sure" });
+      const err = new Error("Email already verified, check your spam to be sure")
+        err.status = 400
+        return next(err)
     }
 
     await query(`UPDATE users SET is_verified = true, verification_token = NULL WHERE id = $1`, [userId]);
@@ -186,7 +192,9 @@ export async function resendVerificationEmailHandler(req, res, next) {
     const { email } = req.body;
   
     if (!email) {
-      return res.status(400).json({ message: "Email is required." });
+      const err = new Error("Email is required")
+      err.status = 400
+      return next(err)
     }
   
     try {
@@ -194,13 +202,17 @@ export async function resendVerificationEmailHandler(req, res, next) {
       const userResult = await query(`SELECT id, username, is_verified FROM users WHERE email = $1`, [email]);
   
       if (userResult.rows.length === 0) {
-        return res.status(404).json({ message: "User not found." });
+        const err = new Error("User not found")
+        err.status = 404
+        return next(err)
       }
   
       const user = userResult.rows[0];
   
       if (user.is_verified) {
-        return res.status(400).json({ message: "Email already verified." });
+        const err = new Error("Email already verified")
+        err.status = 400
+        return next(err)
       }
   
       // Generate a new verification token

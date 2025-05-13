@@ -11,7 +11,9 @@ export async function getShortenedUrlsHandler(req, res, next) {
 
         if(getUrlsResult.rows.length === 0 ) {
             logger.error("There are no shortened urls for this account")
-            return res.status(404).json({message: `NO shortened urls have been created for this user: ${userId}`})
+            const err = new Error(`NO shortened urls have been created for this user: ${userId}`)
+            err.status = 404
+            return next(err)
         }
 
         res.json({
@@ -25,7 +27,6 @@ export async function getShortenedUrlsHandler(req, res, next) {
             `Error displaying shortened urls for user ${userId} : `,
             error
           );
-          next(error)
           res
             .status(500)
             .json({ message: "Failed to fetch urls", error: error.message });
@@ -40,7 +41,9 @@ export async function getStatsOfUrlHandler(req, res, next){
         const urlStatResult = await query(urlStatsQuery, [shortCode, userId])
 
         if(urlStatResult.rows.length === 0) {
-            return res.status(404).json({ message: 'URL not found or unauthorized' });
+            const err = new Error("URL not found or unauthorized")
+            err.status = 404
+            return next(err)
         }
 
         const url = urlStatResult.rows[0];
@@ -60,7 +63,6 @@ export async function getStatsOfUrlHandler(req, res, next){
           expiresAt: url.expires_at,
           timeClicks: clickLogsResult.rows // Optional: array of click timestamps
         });
-        next()
     }
     catch(error) {
         logger.error(error);
