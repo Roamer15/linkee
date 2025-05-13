@@ -593,6 +593,10 @@ body {
   margin-bottom: 20px;
 }
 
+.error-text {
+  color: #d9534f;
+}
+
 .success-message {
   background-color: #e6f4ea;
   color: #2e7d32;
