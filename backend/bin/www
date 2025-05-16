@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+import app from '../app.js';
+import debugLib from'debug';
+import http from'http';
+import { initializeDbSchema, connectToDb, pool } from '../config/db.js';
+import logger from '../utils/logger.js';
+
+const debug = debugLib('linkee:server')
+
+/**
+ * Get port from environment and store in Express.
+ */
+let port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+const server = http.createServer(app)
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+
+const signals = {
+  'SIGHUP': 1,
+  'SIGINT': 2,
+  'SIGTERM': 15
+}
+
+let shuttingDown = false
+
+const shutdown = async(signal, value) => {
+  await pool.end();
+  logger.info('Database pool closed');
+  if(shuttingDown) {
+    logger.info(`Already shutting down. Received ${signal} again`)
+    return
+  }
+
+  shuttingDown = true
+  logger.info(`Received ${signal}. Shutting down gracefully`)
+
+  server.close((err) => {
+    if(err) {
+      logger.error("Error closing  server", err)
+      process.exit(1)
+    }
+    else {
+      logger.info('Server closed. Exiting the process')
+      process.exit(0)
+    }
+  })
+}
+
+Object.keys(signals).forEach((signal) => {
+  process.on(signal, () => {
+    logger.info("Received", signal)
+    shutdown(signal, signals[signal])
+  })
+})
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+      case 'EADDRINUSE':
+        logger.error(bind + ' is already in use');
+        port += 1;
+        logger.info(`Trying next port: ${port}`);
+        // startSever()
+        break;
+      
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+// server.listen(port, () => {
+//   console.log("server listening on port whatever")
+// })
+
+const startSever = async () => {
+  try {
+    logger.info(`Attempting to start server on port ${port}`)
+    await connectToDb()
+    await initializeDbSchema()
+    // await seedSampleProvidersAndSlots()
+    logger.info(`Starting server on port ${port}`)
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  }
+  catch(error) {
+    logger.error('Failed during server startup process: ', error)
+    process.exit(1)
+  }
+}
+
+ startSever()
